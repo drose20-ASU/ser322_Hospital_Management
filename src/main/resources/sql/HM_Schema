@@ -1,0 +1,56 @@
+
+CREATE DATABASE HospitalDB;
+USE HospitalDB;
+
+CREATE TABLE Patient (
+    SSN VARCHAR(11) PRIMARY KEY,
+    Name VARCHAR(100),
+    DateOfBirth DATE,
+    Address VARCHAR(200),
+    Phone VARCHAR(15),
+    MedicalConditions TEXT
+);
+
+CREATE TABLE Hospital (
+    HospitalID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Room VARCHAR(50),
+    Equipment TEXT
+);
+
+CREATE TABLE Staff (
+    EmployeeID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Address VARCHAR(200),
+    Phone VARCHAR(15),
+    Role ENUM('Doctor', 'Nurse', 'Admin')
+);
+
+CREATE TABLE Doctor (
+    EmployeeID INT PRIMARY KEY,
+    PatientAssigned VARCHAR(11),
+    FOREIGN KEY (EmployeeID) REFERENCES Staff(EmployeeID) ON DELETE CASCADE,
+    FOREIGN KEY (PatientAssigned) REFERENCES Patient(SSN) ON DELETE SET NULL
+);
+
+CREATE TABLE Nurse (
+    EmployeeID INT PRIMARY KEY,
+    RoomAssignment VARCHAR(50),
+    FOREIGN KEY (EmployeeID) REFERENCES Staff(EmployeeID) ON DELETE CASCADE
+);
+
+CREATE TABLE Works_At (
+    EmployeeID INT,
+    HospitalID INT,
+    PRIMARY KEY (EmployeeID, HospitalID),
+    FOREIGN KEY (EmployeeID) REFERENCES Staff(EmployeeID) ON DELETE CASCADE,
+    FOREIGN KEY (HospitalID) REFERENCES Hospital(HospitalID) ON DELETE CASCADE
+);
+
+CREATE TABLE Treated_At (
+    SSN VARCHAR(11),
+    HospitalID INT,
+    PRIMARY KEY (SSN, HospitalID),
+    FOREIGN KEY (SSN) REFERENCES Patient(SSN) ON DELETE CASCADE,
+    FOREIGN KEY (HospitalID) REFERENCES Hospital(HospitalID) ON DELETE CASCADE
+);
